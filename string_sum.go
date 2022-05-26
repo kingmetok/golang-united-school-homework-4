@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
-	"strings"
+	"unicode"
 )
 
 //use these errors as appropriate, wrapping them with fmt.Errorf function
@@ -25,24 +25,74 @@ var (
 //
 // Use the errors defined above as described, again wrapping into fmt.Errorf
 
-const PLUS string = "+"
-const EMPTY string = ""
-
 func StringSum(input string) (output string, err error) {
 	if len(input) == 0 {
-		return EMPTY, errorEmptyInput
+		return "", fmt.Errorf("%w", errorEmptyInput)
 	}
-	split := strings.Split(strings.TrimSpace(input), PLUS)
-	if len(split) < 2 {
-		return EMPTY, errorNotTwoOperands
+
+	cleanExpression := getCleanExpression(input)
+	oneOperand, twoOperand := getFirstAndSecondOperands(cleanExpression)
+
+	if _, err = checkOperandsForValid(oneOperand, twoOperand); err != nil {
+		return "", fmt.Errorf("%w", errorNotTwoOperands)
 	}
-	x, err := strconv.Atoi(strings.TrimSpace(split[0]))
+
+	oneNumber, err := strconv.Atoi(oneOperand)
 	if err != nil {
-		return EMPTY, fmt.Errorf("can't convert the first parameter")
+		return "", fmt.Errorf("%w", err)
 	}
-	y, err := strconv.Atoi(strings.TrimSpace(split[1]))
+
+	twoNumber, err := strconv.Atoi(twoOperand)
 	if err != nil {
-		return EMPTY, fmt.Errorf("can't convert the second parameter")
+		return "", fmt.Errorf("%w", err)
 	}
-	return strconv.Itoa(x + y), nil
+
+	sumNumber := oneNumber + twoNumber
+	output = strconv.Itoa(sumNumber)
+
+	return output, nil
+}
+
+// checkOperandsForValid Checking operands for validity.
+func checkOperandsForValid(operandOne, operandTwo string) (string, error) {
+	if len(operandOne) == 0 || len(operandTwo) == 0 {
+		return "", fmt.Errorf("%w", errorNotTwoOperands)
+	}
+
+	for i := range operandOne {
+		if i > 0 {
+			if operandOne[i] == 45 || operandOne[i] == 43 {
+				return "", fmt.Errorf("%w", errorNotTwoOperands)
+			}
+		}
+	}
+
+	return "", nil
+}
+
+// getFirstAndSecondOperands Get 2 operands according to the task condition.
+func getFirstAndSecondOperands(expression string) (oneOperand string, twoOperand string) {
+	for i := range expression {
+		if expression[i] == 45 || expression[i] == 43 {
+			oneOperand = expression[:i]
+			// If the expression is with 3 operands, then in twoOperand it will write the last operand with a sign.
+			twoOperand = expression[i:]
+		}
+	}
+
+	return oneOperand, twoOperand
+}
+
+// getCleanExpression Get a clean expression that includes letters, numbers, + and -. Excluding all other characters.
+func getCleanExpression(input string) string {
+	runes := []rune(input)
+	expression := ""
+	for i := range runes {
+		if !unicode.IsNumber(runes[i]) && !unicode.IsLetter(runes[i]) && runes[i] != 45 && runes[i] != 43 {
+			continue
+		}
+		expression += string(runes[i])
+	}
+
+	return expression
 }

@@ -2,6 +2,9 @@ package string_sum
 
 import (
 	"errors"
+	"fmt"
+	"strconv"
+	"strings"
 )
 
 //use these errors as appropriate, wrapping them with fmt.Errorf function
@@ -22,6 +25,27 @@ var (
 //
 // Use the errors defined above as described, again wrapping into fmt.Errorf
 
+const PLUS string = "+"
+const EMPTY string = ""
+
 func StringSum(input string) (output string, err error) {
-	return "", nil
+	if len(input) == 0 {
+		return EMPTY, errorEmptyInput
+	}
+	if !strings.Contains(input, PLUS) {
+		return EMPTY, fmt.Errorf("the operation is not about sum")
+	}
+	split := strings.Split(strings.TrimSpace(input), PLUS)
+	if len(split) < 2 {
+		return EMPTY, errorNotTwoOperands
+	}
+	x, err := strconv.Atoi(strings.TrimSpace(split[0]))
+	if err != nil {
+		return EMPTY, fmt.Errorf("can't convert the first parameter")
+	}
+	y, err := strconv.Atoi(strings.TrimSpace(split[1]))
+	if err != nil {
+		return EMPTY, fmt.Errorf("can't convert the second parameter")
+	}
+	return strconv.Itoa(x + y), nil
 }

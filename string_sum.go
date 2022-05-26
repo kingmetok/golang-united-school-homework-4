@@ -32,9 +32,6 @@ func StringSum(input string) (output string, err error) {
 	if len(input) == 0 {
 		return EMPTY, errorEmptyInput
 	}
-	if !strings.Contains(input, PLUS) {
-		return EMPTY, fmt.Errorf("the operation is not about sum")
-	}
 	split := strings.Split(strings.TrimSpace(input), PLUS)
 	if len(split) < 2 {
 		return EMPTY, errorNotTwoOperands

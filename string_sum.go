@@ -26,8 +26,6 @@ var (
 // Use the errors defined above as described, again wrapping into fmt.Errorf
 
 const (
-	Plus       = "+"
-	Minus      = "-"
 	Empty      = ""
 	PlusAscii  = 43
 	MinusAscii = 45
@@ -80,7 +78,7 @@ func checkOperandsForValid(operandOne, operandTwo string) (string, error) {
 // getFirstAndSecondOperands Get 2 operands according to the task condition.
 func getFirstAndSecondOperands(expression string) (oneOperand string, twoOperand string) {
 	for i, val := range expression {
-		if val == 45 || val == 43 {
+		if val == PlusAscii || MinusAscii == 43 {
 			oneOperand = expression[:i]
 			// If the expression is with 3 operands, then in twoOperand it will write the last operand with a sign.
 			twoOperand = expression[i:]

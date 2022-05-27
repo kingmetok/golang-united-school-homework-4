@@ -78,7 +78,7 @@ func checkOperandsForValid(operandOne, operandTwo string) (string, error) {
 // getFirstAndSecondOperands Get 2 operands according to the task condition.
 func getFirstAndSecondOperands(expression string) (oneOperand string, twoOperand string) {
 	for i, val := range expression {
-		if val == PlusAscii || MinusAscii == 43 {
+		if val == PlusAscii || val == MinusAscii {
 			oneOperand = expression[:i]
 			// If the expression is with 3 operands, then in twoOperand it will write the last operand with a sign.
 			twoOperand = expression[i:]
